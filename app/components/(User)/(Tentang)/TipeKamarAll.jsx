@@ -12,9 +12,21 @@ const TipeKamarAllComponent = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {[
-          { icon: <FaBed />, title: "Kamar Standar", target: "/TipeKamar" },
-          { icon: <FaBed />, title: "Kamar Deluxe", target: "/TipeKamar" },
-          { icon: <FaBed />, title: "Kamar Family", target: "/TipeKamar" },
+          {
+            icon: <FaBed />,
+            title: "Kamar Standar",
+            target: "/TipeKamar/#standar",
+          },
+          {
+            icon: <FaBed />,
+            title: "Kamar Family",
+            target: "/TipeKamar/#family",
+          },
+          {
+            icon: <FaBed />,
+            title: "Kamar Deluxe",
+            target: "/TipeKamar/#deluxe",
+          },
         ].map((item, index) => (
           <div
             key={index}

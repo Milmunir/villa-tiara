@@ -1,12 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaAngleRight } from "react-icons/fa";
+import { FaAngleRight, FaAngleDown } from "react-icons/fa";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
 const ArtikelAllComponent = () => {
   const [articles, setArticles] = useState([]);
+  const [visibleArticles, setVisibleArticles] = useState(20);
 
   useEffect(() => {
     // Ambil data dari localStorage
@@ -23,13 +24,17 @@ const ArtikelAllComponent = () => {
       : text;
   };
 
+  const handleShowMore = () => {
+    setVisibleArticles((prevVisibleArticles) => prevVisibleArticles + 20);
+  };
+
   return (
     <div className="py-16">
       <div className="container mx-auto px-12 md:px-20 mt-16 md:mt-24">
         {/* Title Section */}
         <section className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
-            Seluruh <span className="text-red-600">Artikel</span>
+            Semua <span className="text-red-600">Artikel</span>
           </h1>
         </section>
 
@@ -41,7 +46,7 @@ const ArtikelAllComponent = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
           {articles
-            .slice()
+            .slice(0, visibleArticles)
             .reverse()
             .map((article) => (
               <motion.div
@@ -84,6 +89,18 @@ const ArtikelAllComponent = () => {
               </motion.div>
             ))}
         </motion.section>
+
+        {/* Show More Button */}
+        {visibleArticles < articles.length && (
+          <div className="flex items-center text-lg justify-center mt-8">
+            <button
+              onClick={handleShowMore}
+              className="text-gray-800 hover:text-red-600 flex items-center font-bold py-2 px-4 transition duration-300 transform hover:-translate-y-1 animate-bounce"
+            >
+              Show More <FaAngleDown className="ml-2" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

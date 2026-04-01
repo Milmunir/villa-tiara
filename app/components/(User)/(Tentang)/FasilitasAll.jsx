@@ -8,6 +8,7 @@ import {
   FaWifi,
   FaBed,
   FaTree,
+  FaMosque,
 } from "react-icons/fa";
 
 const FasilitasAllComponent = () => {
@@ -22,8 +23,8 @@ const FasilitasAllComponent = () => {
           },
           {
             icon: <FaParking />,
-            title: "Parkir Luas",
-            description: "Area parkir luas yang aman dan nyaman.",
+            title: "Parkir Strategis",
+            description: "Area parkir strategis yang aman dan nyaman.",
           },
           {
             icon: <FaUtensils />,
@@ -40,6 +41,11 @@ const FasilitasAllComponent = () => {
             title: "Meeting Room",
             description:
               "Ruang pertemuan yang dilengkapi dengan fasilitas lengkap.",
+          },
+          {
+            icon: <FaMosque />,
+            title: "Musholla",
+            description: "Tempat ibadah yang nyaman dan bersih.",
           },
           {
             icon: <FaWifi />,

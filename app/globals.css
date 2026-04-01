@@ -225,3 +225,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 1;
   transform: translateY(0);
 }
+
+.fade-out {
+  opacity: 0;
+  transform: scale(1.1);
+  transition: opacity 1s ease, transform 1.6s ease;
+}
+
+.fade-out-visible {
+  opacity: 1;
+  transform: scaleY(1);
+}

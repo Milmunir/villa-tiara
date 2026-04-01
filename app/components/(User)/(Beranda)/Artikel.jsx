@@ -1,23 +1,30 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaAngleRight } from "react-icons/fa";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import artikelLists from "../(Artikel)/ArtikelDummy";
+import { renderToString } from "react-dom/server"; // Import renderToString
 
 const ArtikelComponent = () => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    // Simpan artikelDummy ke localStorage
-    localStorage.setItem("artikelList", JSON.stringify(artikelLists));
-    // Ambil data artikel dari localStorage
+    // Proses artikelLists: konversi komponen React di properti 'content' menjadi string HTML
+    const serializedArticles = artikelLists.map((artikel) => ({
+      ...artikel,
+      content: renderToString(artikel.content), // Konversi content ke string HTML
+    }));
+
+    // Simpan artikel ke Local Storage
+    localStorage.setItem("artikelList", JSON.stringify(serializedArticles));
+
+    // Ambil data dari Local Storage
     const storedArticles = localStorage.getItem("artikelList");
     if (storedArticles) {
       const parsedArticles = JSON.parse(storedArticles);
 
-      // Balikkan urutan artikel terlebih dahulu, lalu ambil 4 artikel teratas
+      // Balikkan urutan artikel dan ambil 4 artikel terbaru
       const reversedArticles = parsedArticles.reverse();
       setArticles(reversedArticles.slice(0, 4));
     }

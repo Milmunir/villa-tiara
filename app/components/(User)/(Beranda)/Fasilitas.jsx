@@ -13,6 +13,7 @@ import {
   FaChalkboardTeacher,
   FaMapMarkerAlt,
   FaAngleRight,
+  FaMosque,
 } from "react-icons/fa";
 
 const FasilitasComponent = () => {
@@ -97,7 +98,7 @@ const FasilitasComponent = () => {
             },
             {
               icon: <FaParking className="text-5xl text-red-600 mb-4" />,
-              title: "Parkir Luas",
+              title: "Parkir Strategis",
               description: "Area parkir aman dan nyaman.",
             },
             {
@@ -116,6 +117,11 @@ const FasilitasComponent = () => {
               ),
               title: "Meeting Room",
               description: "Fasilitas lengkap dan nyaman.",
+            },
+            {
+              icon: <FaMosque className="text-5xl text-red-600 mb-4" />,
+              title: "Musholla",
+              description: "Tempat ibadah yang nyaman dan bersih.",
             },
             {
               icon: <FaWifi className="text-5xl text-red-600 mb-4" />,
@@ -152,7 +158,7 @@ const FasilitasComponent = () => {
         <section>
           <Slider {...locationSettings}>
             {[
-              { name: "Telaga Sarangan", distance: "383 m dari villa" },
+              { name: "Telaga Sarangan", distance: "20 m dari villa" },
               { name: "Air Terjun Ngadiloyo", distance: "2.4 km dari villa" },
               { name: "Mojosemi Forest Park", distance: "1.23 km dari villa" },
               { name: "Agrowisata Strawberry", distance: "1.9 km dari villa" },

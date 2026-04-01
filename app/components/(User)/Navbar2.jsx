@@ -130,7 +130,7 @@ const Navbar2Component = () => {
       <div
         className={`container mx-auto flex justify-between items-center px-6 py-2 md:py-3`}
       >
-        <Link href="/Login">
+        <Link href="/Beranda">
           <h1 id="logo" className={`logo text-3xl md:text-4xl text-red-700`}>
             Villa Tiara
           </h1>

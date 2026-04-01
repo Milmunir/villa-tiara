@@ -15,7 +15,7 @@ const NearbyLocComponent = () => {
           {
             icon: <FaWater />,
             title: "Telaga Sarangan",
-            description: "383 m dari villa",
+            description: "20 m dari villa",
           },
           {
             icon: <FaTint />,

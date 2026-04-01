@@ -21,7 +21,9 @@ const FooterComponent = () => {
             </div>
             {/* Call to Action Button */}
             <a
-              href="https://wa.me/6281335623403"
+              href="https://wa.me/6281335623403?text=Halo%2C%20Saya%20ingin%20bertanya.%0AApakah%20ada%20kamar%20yang%20tersedia%20dan%20harga%20kamar%20per-malam%20berapa%3F%0A%0ASaya%20dapat%20informasi%20tentang%20Villa%20Tiara%20dari%20Website%2C%20Terima%20kasih."
+              target="_blank"
+              rel="noreferrer"
               className="inline-block bg-white text-gray-800 px-8 py-3 rounded-lg text-md font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out"
             >
               Hubungi Kami
@@ -47,7 +49,10 @@ const FooterComponent = () => {
             <h2 className="font-bold text-lg lg:mb-4">Tentang Villa</h2>
             <ul className="lg:mb-4">
               <li>
-                <Link href="/Fasilitas" className="hover:text-yellow-300">
+                <Link
+                  href="/Beranda/#fasilitas"
+                  className="hover:text-yellow-300"
+                >
                   Fasilitas
                 </Link>
               </li>
@@ -72,17 +77,26 @@ const FooterComponent = () => {
             <h2 className="font-bold text-lg lg:mb-4">Tipe Kamar</h2>
             <ul>
               <li>
-                <Link href="/TipeKamar" className="hover:text-yellow-300">
+                <Link
+                  href="/TipeKamar/#standar"
+                  className="hover:text-yellow-300"
+                >
                   Standar
                 </Link>
               </li>
               <li>
-                <Link href="/TipeKamar" className="hover:text-yellow-300">
+                <Link
+                  href="/TipeKamar/#family"
+                  className="hover:text-yellow-300"
+                >
                   Family
                 </Link>
               </li>
               <li>
-                <Link href="/TipeKamar" className="hover:text-yellow-300">
+                <Link
+                  href="/TipeKamar/#deluxe"
+                  className="hover:text-yellow-300"
+                >
                   Deluxe
                 </Link>
               </li>
@@ -93,10 +107,9 @@ const FooterComponent = () => {
           <div className="col-span-5 md:col-span-3 lg:col-span-2">
             <h2 className="font-bold text-lg mb-4">Lokasi Villa</h2>
             <p className="mb-2">
-              Jl. Veteran No. 31, Marga Jaya, Kec. Bekasi Selatan, <br />
-              Kota Bekasi, Jawa Barat 17141
+              No. 193, Jl, Raya Telaga Sarangan 63361 Magetan
             </p>
-            <p className="mb-10">Phone: (021) 8877756</p>
+            <p className="mb-10">Phone: 0813-3562-3403</p>
             <div className="flex space-x-4">
               <a
                 href="https://tiktok.com/@tiarasarangan"

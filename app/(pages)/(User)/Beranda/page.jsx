@@ -35,6 +35,12 @@ const componentsBeranda = [
     ),
   },
   {
+    id: "testimoni",
+    component: dynamic(() =>
+      import("@/app/components/(User)/(Beranda)/Testimoni")
+    ),
+  },
+  {
     id: "galeri",
     component: dynamic(() =>
       import("@/app/components/(User)/(Beranda)/Galeri")
@@ -71,7 +77,7 @@ const BerandaPage = () => {
       { threshold: 0.2 }
     );
 
-    const elements = document.querySelectorAll(".fade-in");
+    const elements = document.querySelectorAll(".fade-in, .fade-out");
     elements.forEach((el) => observer.current.observe(el));
 
     return () => observer.current.disconnect();
@@ -79,16 +85,23 @@ const BerandaPage = () => {
 
   return (
     <UserTemplate>
-      {componentsBeranda.map(({ id, component: Component }) => (
-        <div
-          key={id}
-          id={id}
-          className={`fade-in ${visibleSections[id] ? "fade-in-visible" : ""}`}
-          aria-label={`Section ${id}`}
-        >
-          <Component />
-        </div>
-      ))}
+      {componentsBeranda.map(({ id, component: Component }) => {
+        const isJumbotron = id === "jumbotron";
+        const className = isJumbotron
+          ? `fade-out ${visibleSections[id] ? "fade-out-visible" : ""}`
+          : `fade-in ${visibleSections[id] ? "fade-in-visible" : ""}`;
+
+        return (
+          <div
+            key={id}
+            id={id}
+            className={className}
+            aria-label={`Section ${id}`}
+          >
+            <Component />
+          </div>
+        );
+      })}
     </UserTemplate>
   );
 };

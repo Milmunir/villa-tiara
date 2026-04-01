@@ -1,4 +1,11 @@
-const images = [
+const mediaItems = [];
+
+for (let i = 1; i <= 21; i++) {
+  mediaItems.push({ type: "image", src: `/galerikamar/galerikamar(${i}).JPG` });
+}
+
+// Menambahkan URL gambar langsung
+const imageUrls = [
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-9fc40c87b7c08e70296547d0c97dc3cd.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-43300d1713b75257b064b79df6654401.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-5c9c6a49c99dee99b1ea62a8b1122086.jpeg",
@@ -10,8 +17,6 @@ const images = [
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-4954b504bae1b13fc49eafb5c93d707e.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-23f291b7f22f26baa69270d4b0af41be.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-e4002b1853479e2f3330a1e79ed8b5f7.jpeg",
-  "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-1b7042e7d05398eb2cb64f2ccb1f5741.jpeg",
-  "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-20f8c832b9189e5c7c1496b8c2b1b455.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-01553ced2868817ba6abeb142768d915.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-8d71cbe0783f70ede50bd72f50746b48.jpeg",
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-9492e9093d6a8daba0740a778a09da33.jpeg",
@@ -23,4 +28,12 @@ const images = [
   "https://ik.imagekit.io/tvlk/apr-asset/dgXfoyh24ryQLRcGq00cIdKHRmotrWLNlvG-TxlcLxGkiDwaUSggleJNPRgIHCX6/hotel/asset/10011479-74c2b886c0303fb917779d9ac5940ae4.jpeg",
 ];
 
-export default images;
+imageUrls.forEach((url) => mediaItems.push({ type: "image", src: url }));
+
+// Menambahkan URL video drive
+mediaItems.push({
+  type: "video",
+  src: "https://drive.google.com/file/d/13MKFFou8MtOZgJW5kYb2lf6B2L1PZGIK/preview",
+});
+
+export default mediaItems;

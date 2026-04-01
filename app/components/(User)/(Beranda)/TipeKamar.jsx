@@ -10,21 +10,21 @@ const TipeKamarComponent = () => {
   const rooms = [
     {
       type: "Standar",
-      target: "/TipeKamar",
+      target: "/TipeKamar/#standar",
       description:
         "Kamar dengan satu 1 double bed dan 1 sliding bed, ideal untuk pasangan serta kerabat.",
       img: Standart,
     },
     {
       type: "Family",
-      target: "/TipeKamar",
+      target: "/TipeKamar/#family",
       description:
         "Kamar dengan fasilitas 1 double bad dan 1 single bed secara terpisah, ideal untuk keluarga kecil.",
       img: Family,
     },
     {
       type: "Deluxe",
-      target: "/TipeKamar",
+      target: "/TipeKamar/#deluxe",
       description:
         "Kamar dengan 2 double bed, menawarkan kenyamanan extra untuk grup rombongan, kerabat, keluarga.",
       img: Deluxe,

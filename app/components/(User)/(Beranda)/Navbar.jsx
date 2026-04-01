@@ -138,7 +138,7 @@ const NavbarComponent = () => {
           scrolled ? "py-3 md:py-3" : "py-3 md:py-4"
         }`}
       >
-        <Link href="/Login">
+        <Link href="/Beranda">
           <h1
             id="logo"
             className={`logo text-3xl md:text-4xl ${

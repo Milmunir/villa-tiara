@@ -6,7 +6,7 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import Image from "next/image";
 import "react-photo-view/dist/react-photo-view.css";
 import { FaAngleRight } from "react-icons/fa";
-import images from "../(Galeri)/GaleriDummy";
+import mediaItems from "../(Galeri)/GaleriDummy";
 
 const GaleriComponent = () => {
   const [gallery, setGallery] = useState([]);
@@ -26,7 +26,7 @@ const GaleriComponent = () => {
 
   useEffect(() => {
     // Simpan data gambar ke localStorage
-    localStorage.setItem("galeriList", JSON.stringify(images));
+    localStorage.setItem("galeriList", JSON.stringify(mediaItems));
     // Ambil data gambar dari localStorage
     const storedGallery = localStorage.getItem("galeriList");
     if (storedGallery) {
@@ -54,35 +54,52 @@ const GaleriComponent = () => {
         {/* Gallery Section */}
         <PhotoProvider>
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-4 md:mx-10">
-            {gallery.map((image, index) => {
+            {gallery.map((item, index) => {
               if (index < gallery.length - 1) {
-                return (
-                  <PhotoView key={index} src={image}>
-                    <div className="relative group overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
-                      <Image
-                        className="w-full h-full object-cover"
-                        src={image}
-                        alt={`Villa ${index + 1}`}
-                        width={800}
-                        height={533}
-                        loading="lazy"
-                        layout="responsive"
-                      />
-                      <div className="absolute inset-0 bg-black via-transparent opacity-0 group-hover:opacity-70 flex items-center justify-center transition-opacity duration-300 pointer">
-                        <span className="text-white text-md font-semibold">
-                          Klik untuk memperbesar
-                        </span>
+                if (item.type === "image") {
+                  return (
+                    <PhotoView key={index} src={item.src}>
+                      <div className="relative group overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <Image
+                          className="w-full h-full object-cover"
+                          src={item.src}
+                          alt={`Media ${index + 1}`}
+                          width={800}
+                          height={533}
+                          loading="lazy"
+                          layout="responsive"
+                        />
+                        <div className="absolute inset-0 bg-black via-transparent opacity-0 group-hover:opacity-70 flex items-center justify-center transition-opacity duration-300 pointer">
+                          <span className="text-white text-md font-semibold">
+                            Klik untuk memperbesar
+                          </span>
+                        </div>
                       </div>
+                    </PhotoView>
+                  );
+                } else if (item.type === "video") {
+                  return (
+                    <div
+                      key={index}
+                      className="relative group overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300"
+                    >
+                      <iframe
+                        src={item.src}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full object-cover"
+                        title={`Video ${index + 1}`}
+                      ></iframe>
                     </div>
-                  </PhotoView>
-                );
+                  );
+                }
               } else {
                 return (
                   <Link key={index} href="/Galeri">
                     <div className="relative group overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer">
                       <Image
                         className="w-full h-full object-cover"
-                        src={image}
+                        src={item.src}
                         alt="View More"
                         width={800}
                         height={533}

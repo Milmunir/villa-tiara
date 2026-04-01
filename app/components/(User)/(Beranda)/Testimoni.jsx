@@ -1,16 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import Glide from "@glidejs/glide";
 import { FaChevronLeft, FaChevronRight, FaHeart, FaStar } from "react-icons/fa";
-import models1 from "@/public/models1.png";
-import models2 from "@/public/models2.png";
-import models3 from "@/public/models3.png";
 
 const testimonials = [
   {
-    avatar: models1,
     name: "Nurul Halimah",
     type: "Deluxe",
     rating: "9.0",
@@ -20,7 +15,6 @@ const testimonials = [
     likes: 25,
   },
   {
-    avatar: models2,
     name: "Baihaqi Rusdi",
     type: "Family",
     rating: "8.8",
@@ -30,7 +24,6 @@ const testimonials = [
     likes: 30,
   },
   {
-    avatar: models3,
     name: "Ulil Ardian",
     type: "Standar",
     rating: "9.2",
@@ -38,6 +31,24 @@ const testimonials = [
     review:
       "Tempat yang sempurna untuk perjalanan bisnis. WiFi cepat dan fasilitas meeting room sangat baik. Akan kembali lagi!",
     likes: 45,
+  },
+  {
+    name: "Farah Azizah",
+    type: "Suite",
+    rating: "9.5",
+    date: "20 Mei 2024",
+    review:
+      "Pelayanan luar biasa dan kamar yang sangat mewah. Sarapan lezat dan banyak pilihan. Pengalaman menginap yang tak terlupakan!",
+    likes: 50,
+  },
+  {
+    name: "Andi Nugroho",
+    type: "Twin",
+    rating: "8.7",
+    date: "12 Jun 2024",
+    review:
+      "Staf yang sangat ramah dan membantu. Lokasi dekat dengan pusat kota. Kamar bersih dan nyaman. Sangat merekomendasikan!",
+    likes: 40,
   },
 ];
 
@@ -81,16 +92,6 @@ const TestimoniComponent = () => {
                   className="glide__slide py-10 flex px-24 md:px-36 items-center justify-center"
                   key={index}
                 >
-                  {/* Avatar Section */}
-                  <div className="w-52 h-52 hidden lg:flex items-center justify-center bg-red-600 rounded-full">
-                    <Image
-                      src={testimonial.avatar}
-                      alt={testimonial.type}
-                      loading="lazy"
-                      className="rounded-full transform group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-
                   {/* Content Section */}
                   <div className="flex-1 rounded-xl md:ml-10">
                     <div className="lg:flex justify-between items-start rounded-xl">
