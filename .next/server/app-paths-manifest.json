@@ -1,0 +1,22 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(pages)/(Admin)/DaftarBooking/page": "app/(pages)/(Admin)/DaftarBooking/page.js",
+  "/(pages)/(Admin)/DaftarCheckIn/page": "app/(pages)/(Admin)/DaftarCheckIn/page.js",
+  "/(pages)/(Admin)/DaftarKamar/page": "app/(pages)/(Admin)/DaftarKamar/page.js",
+  "/(pages)/(Admin)/DaftarTamu/page": "app/(pages)/(Admin)/DaftarTamu/page.js",
+  "/(pages)/(Admin)/DaftarRiwayat/page": "app/(pages)/(Admin)/DaftarRiwayat/page.js",
+  "/(pages)/(Admin)/Login/page": "app/(pages)/(Admin)/Login/page.js",
+  "/(pages)/(Admin)/TambahBooking/page": "app/(pages)/(Admin)/TambahBooking/page.js",
+  "/(pages)/(Admin)/StatusKamar/page": "app/(pages)/(Admin)/StatusKamar/page.js",
+  "/(pages)/(Admin)/TambahTamu/page": "app/(pages)/(Admin)/TambahTamu/page.js",
+  "/(pages)/(User)/Artikel/[id]/page": "app/(pages)/(User)/Artikel/[id]/page.js",
+  "/(pages)/(User)/Artikel/page": "app/(pages)/(User)/Artikel/page.js",
+  "/(pages)/(User)/Galeri/page": "app/(pages)/(User)/Galeri/page.js",
+  "/(pages)/(Admin)/Dashboard/page": "app/(pages)/(Admin)/Dashboard/page.js",
+  "/(pages)/(User)/Beranda/page": "app/(pages)/(User)/Beranda/page.js",
+  "/(pages)/(User)/Faq/page": "app/(pages)/(User)/Faq/page.js",
+  "/(pages)/(User)/Tentang/page": "app/(pages)/(User)/Tentang/page.js",
+  "/page": "app/page.js",
+  "/(pages)/(User)/TipeKamar/page": "app/(pages)/(User)/TipeKamar/page.js"
+}

@@ -1,0 +1,204 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/app/_not-found/page-91902f91db8b1464.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/css/6213b36e6da4869b.css",
+      "static/chunks/app/layout-7f5e9774bc72e5ed.js"
+    ],
+    "/(pages)/(Admin)/DaftarBooking/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/DaftarBooking/page-248668bd1ef0c539.js"
+    ],
+    "/(pages)/(Admin)/DaftarCheckIn/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/DaftarCheckIn/page-343bf2d7ab6e282c.js"
+    ],
+    "/(pages)/(Admin)/DaftarKamar/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/DaftarKamar/page-c59551c24005f5f4.js"
+    ],
+    "/(pages)/(Admin)/DaftarTamu/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/DaftarTamu/page-76033af8b73b9e11.js"
+    ],
+    "/(pages)/(Admin)/DaftarRiwayat/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6edf0643-8f476a02f0a1761d.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/DaftarRiwayat/page-b480c10ff9f059e1.js"
+    ],
+    "/(pages)/(Admin)/Login/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/app/(pages)/(Admin)/Login/page-94b28195a7149833.js"
+    ],
+    "/(pages)/(Admin)/TambahBooking/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/TambahBooking/page-191a095b146333cc.js"
+    ],
+    "/(pages)/(Admin)/StatusKamar/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/StatusKamar/page-fc0f06249e5c3804.js"
+    ],
+    "/(pages)/(Admin)/TambahTamu/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/41ade5dc-f71aba1abb9904f9.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/TambahTamu/page-068b8590061df26d.js"
+    ],
+    "/(pages)/(User)/Artikel/[id]/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9675-096ceaa317882d3f.js",
+      "static/chunks/app/(pages)/(User)/Artikel/[id]/page-7d41859e242b338b.js"
+    ],
+    "/(pages)/(User)/Artikel/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9675-096ceaa317882d3f.js",
+      "static/chunks/app/(pages)/(User)/Artikel/page-b6ffaa21f9ceeefe.js"
+    ],
+    "/(pages)/(User)/Galeri/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/css/7362395042a375ed.css",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9675-096ceaa317882d3f.js",
+      "static/chunks/app/(pages)/(User)/Galeri/page-552277f4340f5e33.js"
+    ],
+    "/(pages)/(Admin)/Dashboard/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/2018-769a787b567dccac.js",
+      "static/chunks/app/(pages)/(Admin)/Dashboard/page-383e0c20dec3f282.js"
+    ],
+    "/(pages)/(User)/Beranda/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9265-ec3a0fa82d779d4f.js",
+      "static/chunks/app/(pages)/(User)/Beranda/page-e9fabc6b767e6990.js"
+    ],
+    "/(pages)/(User)/Faq/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9265-ec3a0fa82d779d4f.js",
+      "static/chunks/app/(pages)/(User)/Faq/page-48cf6b1389e7af2f.js"
+    ],
+    "/(pages)/(User)/Tentang/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9265-ec3a0fa82d779d4f.js",
+      "static/chunks/app/(pages)/(User)/Tentang/page-db9d41de85f2f4cc.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/app/page-4ad069e8f5490751.js"
+    ],
+    "/(pages)/(User)/TipeKamar/page": [
+      "static/chunks/webpack-03ef4a0e73926a05.js",
+      "static/chunks/4bd1b696-97dc886965ca5580.js",
+      "static/chunks/1517-bac01735ffaba1fa.js",
+      "static/chunks/main-app-5b4b45c9ee0878d5.js",
+      "static/chunks/8e1d74a4-830000dbdae3cf26.js",
+      "static/chunks/6766-e964c9dbdaadc034.js",
+      "static/chunks/9265-ec3a0fa82d779d4f.js",
+      "static/chunks/app/(pages)/(User)/TipeKamar/page-d9e197091600e362.js"
+    ]
+  }
+}
