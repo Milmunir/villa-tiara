@@ -2,9 +2,9 @@ import img1 from "@/public/imgArtikel/img1.jpg";
 import img3 from "@/public/imgArtikel/img3.jpg";
 import img4 from "@/public/imgArtikel/img4.jpg";
 import img5 from "@/public/imgArtikel/perahu.jpg";
-import img6 from "@/public/imgArtikel/Pondok.jpg";
-import img7 from "@/public/imgArtikel/telagasa.jpg";
-import img8 from "@/public/imgArtikel/titi.jpeg";
+import img6 from "@/public/imgArtikel/telagasa.jpg";
+import img7 from "@/public/imgArtikel/titi.jpeg";
+import img8 from "@/public/imgArtikel/Pondok.jpg";
 
 import Artikel1 from "./IsiKonten/artikel1";
 import Artikel2 from "./IsiKonten/artikel2";
