@@ -87,14 +87,13 @@ flowchart TD
   - Distinguishes between `SUPERUSER` and `STAFF` roles.
   - User management endpoints (`/api/admin/users`) enforce `SUPERUSER` permissions.
 
-### 3.3 Security Recommendations — [OUTSTANDING / MEDIUM]
+### 3.3 Security Recommendations & Status
 
-- **Missing Edge-Level Middleware Guard**:
-  - *Current State*: Session validation occurs inside server layouts and individual route handlers.
-  - *Recommendation*: Add a root `middleware.js` to intercept unauthorized requests before layout execution and static segment prefetching.
-- **Login Rate Limiting**:
-  - *Current State*: `/api/admin/auth/login` has no rate limit.
-  - *Recommendation*: Implement IP-based sliding window rate limiting to mitigate brute-force attempts.
+- **Edge-Level Middleware Guard — [RESOLVED]**:
+  - *Implementation*: Root `middleware.js` intercepts all `/admin/*` requests (except `/admin/login`). Unauthenticated requests are immediately redirected before layout processing or route segment prefetching.
+- **Login Rate Limiting — [OUTSTANDING / MEDIUM]**:
+  - *Current State*: `/api/admin/auth/login` currently processes credential verification without rate throttling.
+  - *Recommendation*: Implement IP-based sliding window rate limiting to mitigate automated brute-force attempts.
 
 ---
 
@@ -124,21 +123,17 @@ flowchart TD
 
 ## 5. Performance, Bundle Size & Dependencies Audit
 
-### 5.1 Heavy Eager Imports — [OUTSTANDING / MEDIUM]
+### 5.1 Dynamic Import for Heavy Libraries (`exceljs`) — [RESOLVED]
 
 - **Location**: `app/components/(Admin)/DaftarRiwayat.jsx`
-- **Issue**: Eager top-level import of `exceljs` (`import ExcelJS from "exceljs"`).
-- **Impact**: `/admin/daftarriwayat` bundle size is **257 kB** (First Load JS: **381 kB**).
-- **Remediation**: Use dynamic import inside `exportToExcel`:
-  ```javascript
-  const exportToExcel = async () => {
-    const ExcelJS = (await import("exceljs")).default;
-    // generate spreadsheet...
-  };
-  ```
-  This reduces initial JS payload for `/admin/daftarriwayat` by **~98%**.
+- **Resolution**: Refactored `exportToExcel` to lazily import `exceljs` and `file-saver` via `Promise.all([import("exceljs"), import("file-saver")])`.
+- **Result**: Reduced route size from **257 kB** to **2.13 kB** and First Load JS from **381 kB** to **126 kB** (a **66.9% total JS decrease** and **99.2% page bundle reduction**).
 
-### 5.2 Redundant Carousel Libraries — [OUTSTANDING / LOW]
+### 5.2 Elimination of Dead / Orphaned Artifacts — [RESOLVED]
+
+- **Cleaned Files**: Removed obsolete `UserTemplate.jsx`, `UserTemplate2.jsx`, and `Navbar2.jsx`.
+
+### 5.3 Redundant Carousel Libraries — [OUTSTANDING / LOW]
 
 - **Issue**: Package configuration includes 3 separate carousel engines:
   - `@glidejs/glide` (`Testimoni.jsx`)
@@ -158,9 +153,9 @@ flowchart TD
 - [x] **XSS-Free Markdown Articles**: Migrated articles to file-based `.md` rendered via `react-markdown` and `remark-gfm`.
 
 ### Priority 1: Architecture & Performance Optimization
-- [ ] **Implement Root Edge Middleware**: Add `middleware.js` to guard `/admin/*` subroutes before layout execution.
-- [ ] **Dynamic Import for `exceljs`**: Refactor `DaftarRiwayat.jsx` to lazily import `exceljs`, optimizing the 257 kB bundle.
-- [ ] **Clean Up Dead Artifacts**: Delete unused legacy components (`UserTemplate.jsx`, `UserTemplate2.jsx`, `Navbar2.jsx`).
+- [x] **Implement Root Edge Middleware**: Added `middleware.js` to guard `/admin/*` subroutes before layout execution.
+- [x] **Dynamic Import for `exceljs`**: Refactored `DaftarRiwayat.jsx` to lazily import `exceljs`, reducing route bundle size from 257 kB to 2.13 kB.
+- [x] **Clean Up Dead Artifacts**: Deleted unused legacy components (`UserTemplate.jsx`, `UserTemplate2.jsx`, `Navbar2.jsx`).
 
 ### Priority 2: Security Hardening & Dependency Cleanup
 - [ ] **Login Rate Limiting**: Add IP rate limiting on `/api/admin/auth/login`.

@@ -7,8 +7,6 @@ import {
   FaSearch,
 } from "react-icons/fa";
 import Link from "next/link";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import { useEffect, useState } from "react";
 
 const DaftarRiwayat = () => {
@@ -16,6 +14,7 @@ const DaftarRiwayat = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRiwayatList, setFilteredRiwayatList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isExporting, setIsExporting] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -43,85 +42,96 @@ const DaftarRiwayat = () => {
     setSearchTerm(e.target.value);
   };
 
-  const exportToExcel = () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Riwayat Reservasi");
+  const exportToExcel = async () => {
+    try {
+      setIsExporting(true);
+      const [{ default: ExcelJS }, { saveAs }] = await Promise.all([
+        import("exceljs"),
+        import("file-saver"),
+      ]);
 
-    // Header Data
-    const headers = [
-      "No",
-      "ID Kamar",
-      "Nama Tamu",
-      "No Telepon",
-      "Check-In",
-      "Check-Out",
-      "Total Harga",
-    ];
-    worksheet.addRow(headers);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Riwayat Reservasi");
 
-    // Style Header
-    headers.forEach((_, index) => {
-      const cell = worksheet.getRow(1).getCell(index + 1);
-      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
-      cell.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FFFF0000" },
-      };
-      cell.alignment = { vertical: "middle", horizontal: "center" };
-      cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      };
-    });
+      // Header Data
+      const headers = [
+        "No",
+        "ID Kamar",
+        "Nama Tamu",
+        "No Telepon",
+        "Check-In",
+        "Check-Out",
+        "Total Harga",
+      ];
+      worksheet.addRow(headers);
 
-    // Add Data
-    const rows = riwayatList.map((riwayat, index) => [
-      index + 1,
-      riwayat.idKamar,
-      riwayat.namaTamu,
-      riwayat.noTelepon,
-      new Date(riwayat.tanggalCheckIn).toLocaleDateString("id-ID", {
-        timeZone: "Asia/Jakarta",
-      }),
-      new Date(riwayat.tanggalCheckOut).toLocaleDateString("id-ID", {
-        timeZone: "Asia/Jakarta",
-      }),
-      `Rp. ${riwayat.harga.toLocaleString()}`,
-    ]);
-
-    rows.forEach((row) => worksheet.addRow(row));
-
-    // Atur Lebar Kolom Otomatis
-    const allData = [headers, ...rows];
-    worksheet.columns.forEach((column, index) => {
-      const maxLength = Math.max(
-        ...allData.map((row) => (row[index] ? row[index].toString().length : 0))
-      );
-      column.width = maxLength + 2; // Tambahkan margin
-    });
-
-    // Style Konten
-    worksheet.eachRow((row, rowNumber) => {
-      row.eachCell((cell) => {
+      // Style Header
+      headers.forEach((_, index) => {
+        const cell = worksheet.getRow(1).getCell(index + 1);
+        cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFF0000" },
+        };
+        cell.alignment = { vertical: "middle", horizontal: "center" };
         cell.border = {
           top: { style: "thin" },
           left: { style: "thin" },
           bottom: { style: "thin" },
           right: { style: "thin" },
         };
-        if (rowNumber > 1) {
-          cell.alignment = { vertical: "center", horizontal: "left" };
-        }
       });
-    });
 
-    // Simpan File
-    workbook.xlsx.writeBuffer().then((buffer) => {
+      // Add Data
+      const rows = riwayatList.map((riwayat, index) => [
+        index + 1,
+        riwayat.idKamar,
+        riwayat.namaTamu,
+        riwayat.noTelepon,
+        new Date(riwayat.tanggalCheckIn).toLocaleDateString("id-ID", {
+          timeZone: "Asia/Jakarta",
+        }),
+        new Date(riwayat.tanggalCheckOut).toLocaleDateString("id-ID", {
+          timeZone: "Asia/Jakarta",
+        }),
+        `Rp. ${riwayat.harga.toLocaleString()}`,
+      ]);
+
+      rows.forEach((row) => worksheet.addRow(row));
+
+      // Atur Lebar Kolom Otomatis
+      const allData = [headers, ...rows];
+      worksheet.columns.forEach((column, index) => {
+        const maxLength = Math.max(
+          ...allData.map((row) => (row[index] ? row[index].toString().length : 0))
+        );
+        column.width = maxLength + 2; // Tambahkan margin
+      });
+
+      // Style Konten
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell) => {
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+          if (rowNumber > 1) {
+            cell.alignment = { vertical: "center", horizontal: "left" };
+          }
+        });
+      });
+
+      // Simpan File
+      const buffer = await workbook.xlsx.writeBuffer();
       saveAs(new Blob([buffer]), "Riwayat_Reservasi.xlsx");
-    });
+    } catch (exportError) {
+      console.error("Gagal mengekspor data Excel:", exportError);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   // Hitung indeks untuk item yang akan ditampilkan pada halaman saat ini
@@ -155,10 +165,11 @@ const DaftarRiwayat = () => {
         </Link>
         <button
           onClick={exportToExcel}
-          className="bg-gradient-to-r from-orange-500 to-red-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg shadow-sm flex items-center transition"
+          disabled={isExporting}
+          className="bg-gradient-to-r from-orange-500 to-red-500 hover:bg-yellow-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg shadow-sm flex items-center transition"
         >
           <FaFileExcel className="mr-2" />
-          Ekspor Excel
+          {isExporting ? "Mengekspor..." : "Ekspor Excel"}
         </button>
       </div>
 
