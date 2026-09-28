@@ -5,6 +5,7 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./article/**/*.{md,markdown}",
   ],
   theme: {
     extend: {
@@ -26,5 +27,6 @@ module.exports = {
   plugins: [
     require("tailwind-scrollbar-hide"),
     require("tailwindcss-textshadow"),
+    require("@tailwindcss/typography"),
   ],
 };

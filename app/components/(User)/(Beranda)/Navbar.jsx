@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   FaMapMarkerAlt,
   FaPhoneAlt,
@@ -13,31 +14,31 @@ import {
 } from "react-icons/fa";
 
 const menuItems = [
-  { name: "Beranda", target: "#beranda" },
-  { name: "Tentang", target: "#tentang" },
-  { name: "Tipe Kamar", target: "#tipe-kamar" },
-  { name: "Fasilitas", target: "#fasilitas" },
-  { name: "Testimoni", target: "#testimoni" },
-  { name: "Galeri", target: "#galeri" },
-  { name: "Artikel", target: "#artikel" },
-  { name: "FAQ", target: "#faq" },
+  { name: "Beranda", target: "/beranda", hash: "#jumbotron" },
+  { name: "Tentang", target: "/tentang", hash: "#tentang" },
+  { name: "Tipe Kamar", target: "/tipekamar", hash: "#tipe-kamar" },
+  { name: "Fasilitas", target: "/beranda#fasilitas", hash: "#fasilitas" },
+  { name: "Testimoni", target: "/beranda#testimoni", hash: "#testimoni" },
+  { name: "Galeri", target: "/galeri", hash: "#galeri" },
+  { name: "Artikel", target: "/artikel", hash: "#artikel" },
+  { name: "FAQ", target: "/faq", hash: "#faq" },
 ];
 
 const NavbarComponent = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
-  // Fungsi untuk toggle menu mobile
+  const isHome = pathname === "/" || pathname === "/beranda";
+
   const handleMenuToggle = () => {
     setIsMobileMenuOpen((prevState) => !prevState);
   };
 
-  // Fungsi untuk menutup menu mobile
   const handleCloseMenu = () => {
     setIsMobileMenuOpen(false);
   };
 
-  // Menangani perubahan warna navbar saat scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.pageYOffset > 5);
@@ -46,17 +47,24 @@ const NavbarComponent = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const headerBgClass = isHome
+    ? scrolled
+      ? "bg-white bg-opacity-100 text-black shadow-lg"
+      : "bg-opacity-0 text-white"
+    : "bg-white bg-opacity-100 text-black shadow-lg";
+
+  const topBarBgClass = isHome ? "bg-black bg-opacity-40" : "bg-black bg-opacity-70";
+  const logoTextClass = isHome && !scrolled ? "text-white" : "text-red-700";
+  const menuTextClass = isHome && !scrolled ? "text-white" : "text-gray-800";
+  const menuToggleClass = isHome && !scrolled ? "text-white" : "text-gray-800";
+
   return (
     <header
       id="navbar"
-      className={`fixed left-0 right-0 top-0 z-10 transition-all duration-300 ${
-        scrolled
-          ? "bg-white bg-opacity-100 text-black shadow-lg"
-          : "bg-opacity-0 text-white"
-      }`}
+      className={`fixed left-0 right-0 top-0 z-30 transition-all duration-300 ${headerBgClass}`}
     >
       <div
-        className={`space-x-4 bg-black bg-opacity-40 text-white text-xs md:text-sm transition-all duration-300 py-3 md:py-4 ${
+        className={`space-x-4 ${topBarBgClass} text-white text-xs md:text-sm transition-all duration-300 py-3 md:py-4 ${
           scrolled ? "hidden" : "flex"
         }`}
       >
@@ -104,7 +112,7 @@ const NavbarComponent = () => {
               <FaInstagram className="mr-2" />
             </a>
             <a
-              href=""
+              href="https://twitter.com"
               target="_blank"
               rel="noreferrer"
               className="hover:text-yellow-300"
@@ -138,12 +146,10 @@ const NavbarComponent = () => {
           scrolled ? "py-3 md:py-3" : "py-3 md:py-4"
         }`}
       >
-        <Link href="/Beranda">
+        <Link href="/beranda">
           <h1
             id="logo"
-            className={`logo text-3xl md:text-4xl ${
-              scrolled ? "text-red-700" : "text-white"
-            }`}
+            className={`logo text-3xl md:text-4xl ${logoTextClass}`}
           >
             Villa Tiara
           </h1>
@@ -152,36 +158,37 @@ const NavbarComponent = () => {
         <nav>
           <button
             id="menu-toggle"
-            className={`lg:hidden text-2xl focus:outline-none font-semibold`}
+            className={`lg:hidden text-2xl focus:outline-none font-semibold ${menuToggleClass}`}
             onClick={handleMenuToggle}
           >
             &#9776;
           </button>
           {/* Menu Desktop */}
           <ul
-            className={`hidden overflow-y-auto lg:flex space-x-8 text-md py-2 font-bold ${
-              scrolled ? "text-gray-800" : "text-white"
-            }`}
+            className={`hidden overflow-y-auto lg:flex space-x-8 text-md py-2 font-bold ${menuTextClass}`}
           >
-            {menuItems.map((item) => (
-              <li key={item.target}>
-                <a
-                  href={item.target}
-                  className={`cursor-pointer ${
-                    scrolled ? "hover:text-red-500" : "hover:text-yellow-300"
-                  }`}
-                >
-                  {item.name}
-                </a>
-              </li>
-            ))}
+            {menuItems.map((item) => {
+              const href = isHome ? item.hash : item.target;
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={href}
+                    className={`cursor-pointer ${
+                      scrolled || !isHome ? "hover:text-red-500" : "hover:text-yellow-300"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </div>
       {/* Menu Mobile */}
       <div
         id="mobile-menu"
-        className={`fixed top-0 left-0 h-full w-60 bg-gray-900 bg-opacity-95 text-white transform transition-transform duration-300 ease-in-out flex flex-col items-start p-5 space-y-6 z-20 ${
+        className={`fixed top-0 left-0 h-full w-60 bg-gray-900 bg-opacity-95 text-white transform transition-transform duration-300 ease-in-out flex flex-col items-start p-5 space-y-6 z-40 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -194,18 +201,20 @@ const NavbarComponent = () => {
           ✖
         </button>
         <ul className="text-lg w-full pl-2">
-          {menuItems.map((item) => (
-            <li key={item.target} className="w-full">
-              <Link href={item.target} legacyBehavior>
-                <a
+          {menuItems.map((item) => {
+            const href = isHome ? item.hash : item.target;
+            return (
+              <li key={item.name} className="w-full">
+                <Link
+                  href={href}
                   className="block py-2 px-4 w-full hover:bg-yellow-300 hover:text-gray-900 hover:font-semibold rounded transition duration-300 ease-in-out"
                   onClick={handleCloseMenu}
                 >
                   {item.name}
-                </a>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </header>

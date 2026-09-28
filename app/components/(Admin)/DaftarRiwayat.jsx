@@ -4,33 +4,29 @@ import {
   FaFileExcel,
   FaBookOpen,
   FaArrowLeft,
-  FaTrash,
   FaSearch,
 } from "react-icons/fa";
 import Link from "next/link";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { useEffect, useContext, useState } from "react";
-import { DarkModeContext } from "@/app/(contexts)/DarkModeContext";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-
-const MySwal = withReactContent(Swal);
+import { useEffect, useState } from "react";
 
 const DaftarRiwayat = () => {
-  const { isDarkMode } = useContext(DarkModeContext);
   const [riwayatList, setRiwayatList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRiwayatList, setFilteredRiwayatList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Load data riwayat dari local storage saat komponen dimuat
   useEffect(() => {
-    const storedRiwayatList =
-      JSON.parse(localStorage.getItem("riwayatList")) || [];
-    setRiwayatList(storedRiwayatList);
-    setFilteredRiwayatList(storedRiwayatList);
+    fetch("/api/admin/bookings?status=CHECKED_OUT")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Riwayat gagal dimuat.");
+        setRiwayatList(result);
+        setFilteredRiwayatList(result);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
   useEffect(() => {
@@ -128,80 +124,6 @@ const DaftarRiwayat = () => {
     });
   };
 
-  // Fungsi untuk menghapus riwayat berdasarkan index
-  const handleDelete = (id) => {
-    const updatedRiwayatList = riwayatList.filter(
-      (riwayat) => riwayat.id !== id
-    );
-    // Menampilkan notifikasi sukses
-    MySwal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Anda tidak akan dapat mengembalikan data ini!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, hapus!",
-      cancelButtonText: "Batal",
-      background: isDarkMode ? "#333" : "#fff",
-      color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Menampilkan notifikasi sukses menggunakan sweetalert2
-        MySwal.fire({
-          title: "Hapus Berhasil!",
-          text: "Data riwayat berhasil dihapus.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          setRiwayatList(updatedRiwayatList);
-          localStorage.setItem(
-            "riwayatList",
-            JSON.stringify(updatedRiwayatList)
-          );
-          setFilteredRiwayatList(updatedRiwayatList);
-        });
-      }
-    });
-  };
-
-  // Fungsi untuk menghapus semua data riwayat
-  const handleClearData = () => {
-    // Menampilkan notifikasi sukses menggunakan sweetalert2
-    MySwal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Anda tidak akan dapat mengembalikan data ini!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, hapus semuanya!",
-      cancelButtonText: "Batal",
-      background: isDarkMode ? "#333" : "#fff",
-      color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Menampilkan notifikasi sukses menggunakan sweetalert2
-        MySwal.fire({
-          title: "Hapus Semuanya Berhasil!",
-          text: "Semua data riwayat berhasil dihapus.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          localStorage.removeItem("riwayatList");
-          setRiwayatList([]);
-          setFilteredRiwayatList([]);
-        });
-      }
-    });
-  };
-
   // Hitung indeks untuk item yang akan ditampilkan pada halaman saat ini
   const sortedRiwayatList = [...filteredRiwayatList].reverse();
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -225,7 +147,7 @@ const DaftarRiwayat = () => {
 
       <div className="mt-6 flex justify-between items-center text-sm mb-6">
         <Link
-          href="/Dashboard"
+          href="/admin/dashboard"
           className="flex items-center text-md font-semibold text-gray-600 dark:text-gray-400 hover:text-yellow-500 transition"
         >
           <FaArrowLeft className="text-yellow-500 mr-2" />
@@ -263,7 +185,6 @@ const DaftarRiwayat = () => {
               <th className="px-4 py-2">Check-in</th>
               <th className="px-4 py-2">Check-out</th>
               <th className="px-4 py-2">Total Harga</th>
-              <th className="px-4 py-2">Aksi</th>
             </tr>
           </thead>
           <tbody id="riwayatTableBody">
@@ -291,14 +212,6 @@ const DaftarRiwayat = () => {
                   <td className="border px-4 py-2 dark:border-gray-700">
                     {riwayat.harga}
                   </td>
-                  <td className="border px-4 py-2 dark:border-gray-700">
-                    <button
-                      onClick={() => handleDelete(riwayat.id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-2 mx-1 py-1 rounded-md"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
                 </tr>
               ))
             ) : (
@@ -313,14 +226,6 @@ const DaftarRiwayat = () => {
       </div>
 
       <div className="flex items-center justify-between my-6 mb-20">
-        <div>
-          <button
-            onClick={handleClearData}
-            className=" py-2 px-4 bg-gray-500 dark:bg-gray-700 text-white rounded-md hover:bg-gray-600 dark:hover:bg-gray-800"
-          >
-            Clear Data
-          </button>
-        </div>
         <div>
           {Array.from(
             { length: Math.ceil(filteredRiwayatList.length / itemsPerPage) },

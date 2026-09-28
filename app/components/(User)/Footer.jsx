@@ -50,24 +50,24 @@ const FooterComponent = () => {
             <ul className="lg:mb-4">
               <li>
                 <Link
-                  href="/Beranda/#fasilitas"
+                  href="/beranda/#fasilitas"
                   className="hover:text-yellow-300"
                 >
                   Fasilitas
                 </Link>
               </li>
               <li>
-                <Link href="/Galeri" className="hover:text-yellow-300">
+                <Link href="/galeri" className="hover:text-yellow-300">
                   Galeri
                 </Link>
               </li>
               <li>
-                <Link href="/Artikel" className="hover:text-yellow-300">
+                <Link href="/artikel" className="hover:text-yellow-300">
                   Artikel
                 </Link>
               </li>
               <li>
-                <Link href="/Faq" className="hover:text-yellow-300">
+                <Link href="/faq" className="hover:text-yellow-300">
                   FAQ
                 </Link>
               </li>
@@ -78,7 +78,7 @@ const FooterComponent = () => {
             <ul>
               <li>
                 <Link
-                  href="/TipeKamar/#standar"
+                  href="/tipekamar/#standar"
                   className="hover:text-yellow-300"
                 >
                   Standar
@@ -86,7 +86,7 @@ const FooterComponent = () => {
               </li>
               <li>
                 <Link
-                  href="/TipeKamar/#family"
+                  href="/tipekamar/#family"
                   className="hover:text-yellow-300"
                 >
                   Family
@@ -94,7 +94,7 @@ const FooterComponent = () => {
               </li>
               <li>
                 <Link
-                  href="/TipeKamar/#deluxe"
+                  href="/tipekamar/#deluxe"
                   className="hover:text-yellow-300"
                 >
                   Deluxe

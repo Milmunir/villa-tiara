@@ -6,25 +6,23 @@ import { FaAngleDown } from "react-icons/fa";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { motion } from "framer-motion";
+import mediaItems from "./GaleriDummy";
 
 const GaleriAllComponent = () => {
-  const [gallery, setGallery] = useState([]);
+  const [gallery, setGallery] = useState(mediaItems);
   const [visibleItems, setVisibleItems] = useState(20);
 
   useEffect(() => {
-    // Ambil data gambar dari localStorage
+    // Ambil data gambar dari localStorage jika tersedia
     const storedGallery = localStorage.getItem("galeriList");
     if (storedGallery) {
       try {
         const parsedGallery = JSON.parse(storedGallery);
-        if (Array.isArray(parsedGallery)) {
+        if (Array.isArray(parsedGallery) && parsedGallery.length > 0) {
           setGallery(parsedGallery);
-        } else {
-          setGallery([]);
         }
       } catch (error) {
         console.error("Error parsing gallery data:", error);
-        setGallery([]);
       }
     }
   }, []);

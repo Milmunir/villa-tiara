@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { FaUserPlus, FaArrowLeft, FaUserCheck } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,40 +13,44 @@ const MySwal = withReactContent(Swal);
 const TambahTamu = () => {
   const router = useRouter();
   const { isDarkMode } = useContext(DarkModeContext);
-  const [tamuList, setTamuList] = useState([]);
-
-  useEffect(() => {
-    const storedTamuList = JSON.parse(localStorage.getItem("tamuList")) || [];
-    setTamuList(storedTamuList);
-  }, []);
-
   // Fungsi untuk menangani submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newTamu = {
-      id: Date.now(),
       namaLengkap: e.target.nama_lengkap.value,
       noHp: e.target.no_hp.value,
       keperluan: e.target.keperluan.value,
       tanggalWaktu: new Date().toLocaleString(),
     };
 
-    const updatedTamuList = [...tamuList, newTamu];
-    setTamuList(updatedTamuList);
-    localStorage.setItem("tamuList", JSON.stringify(updatedTamuList));
-    // Menampilkan notifikasi sukses menggunakan sweetalert2
-    MySwal.fire({
-      title: "Tambah Tamu Berhasil!",
-      text: "Data tamu berhasil disimpan.",
-      icon: "success",
-      confirmButtonText: "OK",
-      background: isDarkMode ? "#333" : "#fff",
-      color: isDarkMode ? "#fff" : "#000",
-      confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-    }).then(() => {
-      router.push("/DaftarTamu");
-    });
+    try {
+      const response = await fetch("/api/admin/guests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTamu),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Data tamu gagal disimpan.");
+      await MySwal.fire({
+        title: "Tambah Tamu Berhasil!",
+        text: "Data tamu berhasil disimpan.",
+        icon: "success",
+        confirmButtonText: "OK",
+        background: isDarkMode ? "#333" : "#fff",
+        color: isDarkMode ? "#fff" : "#000",
+        confirmButtonColor: "#f59e0b",
+      });
+      router.push("/admin/daftartamu");
+    } catch (error) {
+      MySwal.fire({
+        title: "Gagal Menyimpan",
+        text: error.message || "Silakan coba lagi.",
+        icon: "error",
+        background: isDarkMode ? "#333" : "#fff",
+        color: isDarkMode ? "#fff" : "#000",
+      });
+    }
   };
 
   return (
@@ -118,7 +122,7 @@ const TambahTamu = () => {
 
           <div className="flex flex-col sm:flex-row justify-between items-center mt-6 space-y-4 sm:space-y-0">
             <Link
-              href="/DaftarTamu"
+              href="/admin/daftartamu"
               className="flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-yellow-500 transition"
             >
               <FaArrowLeft className="text-yellow-500 mr-2" /> Kembali

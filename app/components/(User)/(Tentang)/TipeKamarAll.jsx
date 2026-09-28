@@ -15,17 +15,17 @@ const TipeKamarAllComponent = () => {
           {
             icon: <FaBed />,
             title: "Kamar Standar",
-            target: "/TipeKamar/#standar",
+            target: "/tipekamar/#standar",
           },
           {
             icon: <FaBed />,
             title: "Kamar Family",
-            target: "/TipeKamar/#family",
+            target: "/tipekamar/#family",
           },
           {
             icon: <FaBed />,
             title: "Kamar Deluxe",
-            target: "/TipeKamar/#deluxe",
+            target: "/tipekamar/#deluxe",
           },
         ].map((item, index) => (
           <div

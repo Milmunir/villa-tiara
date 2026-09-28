@@ -6,6 +6,7 @@ import {
   FaBook,
   FaBed,
   FaFileAlt,
+  FaUsers,
   FaSignOutAlt,
   FaChevronDown,
 } from "react-icons/fa";
@@ -14,11 +15,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { DarkModeContext } from "@/app/(contexts)/DarkModeContext";
 
-const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
+const SidebarAdmin = forwardRef(({ isOpen, onClose, currentUser }, ref) => {
   const { isDarkMode } = useContext(DarkModeContext);
   const [currentDate, setCurrentDate] = useState("");
   const [dropdowns, setDropdowns] = useState({
     reservasi: false,
+    kamar: false,
     bukutamu: false,
     laporan: false,
   });
@@ -28,6 +30,11 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
       ...prevState,
       [menu]: !prevState[menu],
     }));
+  };
+
+  const handleSignOut = async () => {
+    await fetch("/api/admin/auth/logout", { method: "POST" });
+    window.location.assign("/admin/login");
   };
 
   useEffect(() => {
@@ -44,12 +51,19 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
 
   return (
     <>
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 md:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
       <aside
         id="sidebar"
         ref={ref}
         className={`text-white fixed overflow-auto scrollbar-hide inset-y-0 left-0 w-64 h-screen transition-transform transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 z-20 duration-300 ease-in-out ${
+        } md:translate-x-0 z-30 duration-300 ease-in-out ${
           isDarkMode ? "bg-gray-800" : "bg-red-700"
         }`}
       >
@@ -87,8 +101,8 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   : "hover:from-orange-500 hover:to-red-500"
               }`}
             >
-              <Link href="/Dashboard" passHref legacyBehavior>
-                <a className="flex items-center px-2 font-medium">
+              <Link href="/admin/dashboard" passHref legacyBehavior>
+                <a onClick={onClose} className="flex items-center px-2 font-medium">
                   <FaTachometerAlt className="w-6 h-6" />
                   <span
                     className={`ml-3 ${
@@ -100,6 +114,15 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                 </a>
               </Link>
             </li>
+
+            {currentUser?.role === "SUPERUSER" && (
+              <li className="px-6 py-4 hover:bg-gradient-to-r rounded-md">
+                <Link href="/admin/users" onClick={onClose} className="flex items-center px-2 font-medium">
+                  <FaUsers className="w-6 h-6" />
+                  <span className="ml-3 text-gray-300 hover:text-white">Users</span>
+                </Link>
+              </li>
+            )}
 
             <li
               className={`px-6 py-4 hover:bg-gradient-to-r rounded-md ${
@@ -133,8 +156,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                 }`}
               >
                 <li>
-                  <Link href="/TambahBooking" passHref legacyBehavior>
+                  <Link href="/admin/tambahbooking" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -144,8 +168,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/DaftarBooking" passHref legacyBehavior>
+                  <Link href="/admin/daftarbooking" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -155,8 +180,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/DaftarCheckIn" passHref legacyBehavior>
+                  <Link href="/admin/daftarcheckin" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -166,8 +192,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/DaftarRiwayat" passHref legacyBehavior>
+                  <Link href="/admin/daftarriwayat" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -211,8 +238,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                 }`}
               >
                 <li>
-                  <Link href="/DaftarKamar" passHref legacyBehavior>
+                  <Link href="/admin/daftarkamar" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -222,8 +250,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/StatusKamar" passHref legacyBehavior>
+                  <Link href="/admin/statuskamar" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -267,8 +296,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                 }`}
               >
                 <li>
-                  <Link href="/TambahTamu" passHref legacyBehavior>
+                  <Link href="/admin/tambahtamu" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -278,8 +308,9 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/DaftarTamu" passHref legacyBehavior>
+                  <Link href="/admin/daftartamu" passHref legacyBehavior>
                     <a
+                      onClick={onClose}
                       className={`${
                         isDarkMode ? "text-gray-400" : "text-gray-300"
                       } hover:text-white`}
@@ -334,8 +365,7 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   : "hover:from-orange-500 hover:to-red-500"
               }`}
             >
-              <Link href="/Login" passHref legacyBehavior>
-                <a className="flex items-center px-2 font-medium">
+              <button onClick={handleSignOut} className="w-full flex items-center px-2 font-medium">
                   <FaSignOutAlt className="w-6 h-6" />
                   <span
                     className={`ml-3 ${
@@ -344,8 +374,7 @@ const SidebarAdmin = forwardRef(({ isOpen }, ref) => {
                   >
                     Keluar
                   </span>
-                </a>
-              </Link>
+              </button>
             </li>
           </ul>
         </nav>

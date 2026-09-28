@@ -31,18 +31,25 @@ const DaftarKamar = () => {
   const itemsPerPage = 10;
   const [editingKamar, setEditingKamar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState("");
 
-  // Load data tamu dari local storage saat komponen dimuat
   useEffect(() => {
-    const storedKamarList = JSON.parse(localStorage.getItem("kamarList"));
-
-    if (storedKamarList) {
-      setKamarList(storedKamarList);
-      setFilteredKamarList([
-        ...storedKamarList.VillaTiara1,
-        ...storedKamarList.VillaTiara2,
-      ]);
-    }
+    let cancelled = false;
+    fetch("/api/admin/rooms")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Kamar gagal dimuat.");
+        return result;
+      })
+      .then((rooms) => {
+        if (!cancelled) setKamarList(rooms);
+      })
+      .catch((loadError) => {
+        if (!cancelled) setError(loadError.message);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -67,18 +74,8 @@ const DaftarKamar = () => {
     setIsEditing(true);
   };
 
-  const handleSaveEdit = () => {
-    const updatedKamarList = {
-      ...kamarList,
-      VillaTiara1: kamarList.VillaTiara1.map((kamar) =>
-        kamar.kodeKamar === editingKamar.kodeKamar ? editingKamar : kamar
-      ),
-      VillaTiara2: kamarList.VillaTiara2.map((kamar) =>
-        kamar.kodeKamar === editingKamar.kodeKamar ? editingKamar : kamar
-      ),
-    };
-
-    MySwal.fire({
+  const handleSaveEdit = async () => {
+    const confirmation = await MySwal.fire({
       title: "Apakah Anda yakin?",
       text: "Pastikan data yang Anda masukkan sudah benar.",
       icon: "warning",
@@ -89,33 +86,44 @@ const DaftarKamar = () => {
       cancelButtonText: "Batal",
       background: isDarkMode ? "#333" : "#fff",
       color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        MySwal.fire({
-          title: "Update Berhasil!",
-          text: "Data kamar berhasil diperbarui.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          setKamarList(updatedKamarList);
-          localStorage.setItem("kamarList", JSON.stringify(updatedKamarList));
-          setEditingKamar(null);
-          setIsEditing(false);
-          setFilteredKamarList([
-            ...updatedKamarList.VillaTiara1,
-            ...updatedKamarList.VillaTiara2,
-          ]);
-        });
-      }
     });
+    if (!confirmation.isConfirmed) return;
+
+    try {
+      const response = await fetch(`/api/admin/rooms/${encodeURIComponent(editingKamar.kodeKamar)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingKamar),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Data kamar gagal diperbarui.");
+      const updatedKamarList = Object.fromEntries(
+        Object.entries(kamarList).map(([villa, rooms]) => [
+          villa,
+          rooms.map((room) => room.kodeKamar === editingKamar.kodeKamar ? editingKamar : room),
+        ])
+      );
+      setKamarList(updatedKamarList);
+      setEditingKamar(null);
+      setIsEditing(false);
+      setError("");
+      await MySwal.fire({
+        title: "Update Berhasil!",
+        text: "Data kamar berhasil diperbarui.",
+        icon: "success",
+        confirmButtonText: "OK",
+        background: isDarkMode ? "#333" : "#fff",
+        color: isDarkMode ? "#fff" : "#000",
+        confirmButtonColor: "#f59e0b",
+      });
+    } catch (saveError) {
+      setError(saveError.message);
+    }
   };
 
   // Fungsi untuk navigasi ke halaman tambah tamu
   const handleAddGuest = () => {
-    router.push("/StatusKamar");
+    router.push("/admin/statuskamar");
   };
 
   // Hitung indeks untuk item yang akan ditampilkan pada halaman saat ini
@@ -135,10 +143,11 @@ const DaftarKamar = () => {
         <FaBed className="text-yellow-500 mr-2" />
         Daftar Kamar
       </h2>
+      {error && <p role="alert" className="mb-4 text-sm text-red-700 dark:text-red-300">{error}</p>}
 
       <div className="mt-6 flex justify-between items-center text-sm mb-6">
         <Link
-          href="/Dashboard"
+          href="/admin/dashboard"
           className="flex items-center text-md font-semibold text-gray-600 dark:text-gray-400 hover:text-yellow-500 transition"
         >
           <FaArrowLeft className="text-yellow-500 mr-2" />
@@ -231,7 +240,9 @@ const DaftarKamar = () => {
                       Kode Kamar
                     </label>
                     <input
-                      type="text"
+                      type="number"
+                      min="0"
+                      step="1"
                       readOnly
                       value={editingKamar.kodeKamar}
                       onChange={(e) =>

@@ -1,4 +1,4 @@
-// File: E:\prvt\villa-tiara\app\layout.js
+// File: F:\frs\villa-tiara\app\layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

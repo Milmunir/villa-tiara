@@ -1,6 +1,5 @@
 "use client";
 import { FaBed, FaCalendar, FaUsers, FaDollarSign } from "react-icons/fa";
-import kamarLists from "./TambahKamar";
 import { useState, useEffect, useContext } from "react";
 import { DarkModeContext } from "@/app/(contexts)/DarkModeContext";
 
@@ -15,32 +14,36 @@ const DashboardAdmin = () => {
   const { isDarkMode } = useContext(DarkModeContext);
 
   useEffect(() => {
-    const jsonData = JSON.stringify(kamarLists);
-    localStorage.setItem("kamarList", jsonData);
-    console.log(localStorage.getItem("kamarList"));
-
-    const storedBookingList =
-      JSON.parse(localStorage.getItem("bookingList")) || [];
-    const storedCheckInList =
-      JSON.parse(localStorage.getItem("checkInList")) || [];
-    const storedTamuList = JSON.parse(localStorage.getItem("tamuList")) || [];
-    const storedRiwayatList =
-      JSON.parse(localStorage.getItem("riwayatList")) || [];
-    const storedKamarList = JSON.parse(localStorage.getItem("kamarList")) || {
-      VillaTiara1: [],
-      VillaTiara2: [],
+    let cancelled = false;
+    const loadDashboardData = async () => {
+      const requests = [
+        "/api/admin/bookings?status=BOOKED",
+        "/api/admin/bookings?status=CHECKED_IN",
+        "/api/admin/bookings?status=CHECKED_OUT",
+        "/api/admin/guests",
+        "/api/admin/rooms",
+      ];
+      const responses = await Promise.all(requests.map((url) => fetch(url)));
+      if (responses.some((response) => !response.ok)) {
+        throw new Error("Dashboard data could not be loaded.");
+      }
+      const [bookings, checkIns, history, guests, rooms] = await Promise.all(
+        responses.map((response) => response.json())
+      );
+      if (cancelled) return;
+      setBookingList(bookings);
+      setCheckInList(checkIns);
+      setRiwayatList(history);
+      setTamuList(guests);
+      setTotalRooms(
+        (rooms.VillaTiara1 || []).length + (rooms.VillaTiara2 || []).length
+      );
     };
 
-    setBookingList(storedBookingList);
-    setCheckInList(storedCheckInList);
-    setTamuList(storedTamuList);
-    setRiwayatList(storedRiwayatList);
-
-    // Hitung total kamar dari VillaTiara1 dan VillaTiara2
-    const total =
-      (storedKamarList.VillaTiara1 || []).length +
-      (storedKamarList.VillaTiara2 || []).length;
-    setTotalRooms(total);
+    loadDashboardData().catch((error) => console.error(error));
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Fungsi untuk menghitung jumlah occupied rooms berdasarkan tanggal
@@ -51,13 +54,13 @@ const DashboardAdmin = () => {
     const occupiedFromBooking = bookingList.filter(
       (booking) =>
         new Date(booking.tanggalCheckIn) <= dateObj &&
-        new Date(booking.tanggalCheckOut) >= dateObj
+        new Date(booking.tanggalCheckOut) > dateObj
     );
 
     const occupiedFromCheckIn = checkInList.filter(
       (checkin) =>
         new Date(checkin.tanggalCheckIn) <= dateObj &&
-        new Date(checkin.tanggalCheckOut) >= dateObj
+        new Date(checkin.tanggalCheckOut) > dateObj
     );
 
     return occupiedFromBooking.length + occupiedFromCheckIn.length;
@@ -66,9 +69,12 @@ const DashboardAdmin = () => {
   // Fungsi untuk menghitung jumlah tamu terdaftar berdasarkan tanggal
   const calculateGuestCount = (date) => {
     const dateObj = new Date(date); // Filter tamu berdasarkan tanggal
-    const guestsOnDate = tamuList.filter(
-      (tamu) => new Date(tamu.tanggal) <= dateObj
-    );
+    const nextDate = new Date(dateObj);
+    nextDate.setUTCDate(nextDate.getUTCDate() + 1);
+    const guestsOnDate = tamuList.filter((tamu) => {
+      const guestDate = new Date(tamu.timestamp || tamu.tanggalWaktu);
+      return !Number.isNaN(guestDate.getTime()) && guestDate < nextDate;
+    });
 
     return guestsOnDate.length; // Jumlah tamu pada tanggal tertentu
   };
@@ -98,7 +104,7 @@ const DashboardAdmin = () => {
 
   // Menggabungkan dan mengurutkan data berdasarkan tanggal update
   const combinedList = [...bookingList, ...checkInList, ...riwayatList].sort(
-    (a, b) => new Date(b.id) - new Date(a.id)
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
   );
 
   // Menampilkan 10 data terbaru

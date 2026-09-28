@@ -95,7 +95,7 @@ const GaleriComponent = () => {
                 }
               } else {
                 return (
-                  <Link key={index} href="/Galeri">
+                  <Link key={index} href="/galeri">
                     <div className="relative group overflow-hidden rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300 cursor-pointer">
                       <Image
                         className="w-full h-full object-cover"

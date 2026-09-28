@@ -7,6 +7,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Parkinsans:wght@300..800&display=swap");
 
 @font-face {
+  font-family: "Geist Sans";
+  src: url("/fonts/GeistVF.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMonoVF.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Brush Script MT";
   src: url("/fonts/BRUSHSCI.TTF") format("truetype");
   font-weight: normal;
@@ -20,6 +36,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-geist-sans: "Geist Sans";
+  --font-geist-mono: "Geist Mono";
 }
 
 @media (prefers-color-scheme: dark) {

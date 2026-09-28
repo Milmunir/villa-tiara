@@ -22,24 +22,23 @@ const DaftarCheckIn = () => {
   const router = useRouter();
   const { isDarkMode } = useContext(DarkModeContext);
   const [checkInList, setCheckInList] = useState([]);
-  const [riwayatList, setRiwayatList] = useState([]);
   const [invoiceData, setInvoiceData] = useState(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCheckInList, setFilteredCheckInList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [error, setError] = useState("");
 
-  // Load data checkout dari local storage saat komponen dimuat
   useEffect(() => {
-    const storedCheckInList =
-      JSON.parse(localStorage.getItem("checkInList")) || [];
-    const storedRiwayatList =
-      JSON.parse(localStorage.getItem("riwayatList")) || [];
-
-    setCheckInList(storedCheckInList);
-    setRiwayatList(storedRiwayatList);
-    setFilteredCheckInList(storedCheckInList);
+    fetch("/api/admin/bookings?status=CHECKED_IN")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Check-in gagal dimuat.");
+        setCheckInList(result);
+        setFilteredCheckInList(result);
+      })
+      .catch((loadError) => setError(loadError.message));
   }, []);
 
   useEffect(() => {
@@ -54,9 +53,8 @@ const DaftarCheckIn = () => {
   };
 
   // Fungsi untuk checkIn berdasarkan index
-  const handleCheckOutClick = (id) => {
-    // Menampilkan notifikasi sukses menggunakan sweetalert2
-    MySwal.fire({
+  const handleCheckOutClick = async (id) => {
+    const confirmation = await MySwal.fire({
       title: "Apakah Anda yakin?",
       text: "Pastikan tamu sudah keluar.",
       icon: "warning",
@@ -67,78 +65,16 @@ const DaftarCheckIn = () => {
       cancelButtonText: "Batal",
       background: isDarkMode ? "#333" : "#fff",
       color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Menampilkan notifikasi sukses menggunakan sweetalert2
-        MySwal.fire({
-          title: "Check-Out Berhasil!",
-          text: "Data check-out berhasil disimpan.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          // Temukan booking yang cocok berdasarkan id
-          const checkInToCheckOut = checkInList.find(
-            (checkin) => checkin.id === id
-          );
-
-          // Buat objek dengan status yang diperbarui
-          const updatedCheckInStatus = {
-            ...checkInToCheckOut,
-            id: Date.now(),
-            statusBooking: "checkout",
-            statusKamar: "kosong",
-          };
-
-          // Filter checkInList untuk menghapus reservasi yang di-check-out
-          const updatedCheckInList = checkInList.filter(
-            (checkin) => checkin.id !== id
-          );
-
-          const newRiwayatList = [...riwayatList, updatedCheckInStatus];
-
-          setCheckInList(updatedCheckInList);
-          setRiwayatList(newRiwayatList);
-
-          // Perbarui status kamar menjadi "kosong"
-          const storedKamarList = JSON.parse(
-            localStorage.getItem("kamarList")
-          ) || {
-            VillaTiara1: [],
-            VillaTiara2: [],
-          };
-          const updateRoomStatus = (roomList) =>
-            roomList.map((kamar) =>
-              kamar.kodeKamar === checkInToCheckOut.idKamar
-                ? { ...kamar, status: "kosong" }
-                : kamar
-            );
-
-          const updatedVillaTiara1 = updateRoomStatus(
-            storedKamarList.VillaTiara1
-          );
-          const updatedVillaTiara2 = updateRoomStatus(
-            storedKamarList.VillaTiara2
-          );
-
-          localStorage.setItem(
-            "kamarList",
-            JSON.stringify({
-              VillaTiara1: updatedVillaTiara1,
-              VillaTiara2: updatedVillaTiara2,
-            })
-          );
-          localStorage.setItem(
-            "checkInList",
-            JSON.stringify(updatedCheckInList)
-          );
-          localStorage.setItem("riwayatList", JSON.stringify(newRiwayatList));
-          router.push("/DaftarRiwayat"); // Mengarahkan ke halaman lain setelah notifikasi
-        });
-      }
     });
+    if (!confirmation.isConfirmed) return;
+    try {
+      const response = await fetch(`/api/admin/bookings/${id}/check-out`, { method: "POST" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Check-out gagal disimpan.");
+      router.push("/admin/daftarriwayat");
+    } catch (checkOutError) {
+      setError(checkOutError.message);
+    }
   };
 
   // Fungsi untuk melihat invoice
@@ -177,6 +113,7 @@ const DaftarCheckIn = () => {
         <FaCreditCard className="text-yellow-500 mr-2" />
         CheckOut Reservasi
       </h2>
+      {error && <p role="alert" className="mb-4 text-sm text-red-700 dark:text-red-300">{error}</p>}
 
       <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
         <div className="relative mb-4">
@@ -229,7 +166,7 @@ const DaftarCheckIn = () => {
         <div className="flex items-center justify-between mt-8">
           <div>
             <Link
-              href="/DaftarBooking"
+              href="/admin/daftarbooking"
               className="flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-yellow-500 transition"
             >
               <FaArrowLeft className="mr-2" />

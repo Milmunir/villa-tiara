@@ -34,7 +34,7 @@ const TentangComponent = () => {
               menguras kantong.
             </p>
             <Link
-              href="/Tentang"
+              href="/tentang"
               className="inline-flex items-center justify-center px-8 py-4 bg-red-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-red-700 transition duration-300"
             >
               <span>Selengkapnya</span>

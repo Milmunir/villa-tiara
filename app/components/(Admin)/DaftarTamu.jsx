@@ -23,12 +23,17 @@ const DaftarTamu = () => {
   const [filteredTamuList, setFilteredTamuList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [error, setError] = useState("");
 
-  // Fungsi untuk mengambil data dari localStorage saat komponen dimuat
   useEffect(() => {
-    const storedTamuList = JSON.parse(localStorage.getItem("tamuList")) || [];
-    setTamuList(storedTamuList);
-    setFilteredTamuList(storedTamuList);
+    fetch("/api/admin/guests")
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Data tamu gagal dimuat.");
+        setTamuList(result);
+        setFilteredTamuList(result);
+      })
+      .catch((loadError) => setError(loadError.message));
   }, []);
 
   useEffect(() => {
@@ -45,10 +50,8 @@ const DaftarTamu = () => {
   };
 
   // Fungsi untuk menghapus tamu berdasarkan id
-  const handleDelete = (id) => {
-    const updatedTamuList = tamuList.filter((tamu) => tamu.id !== id);
-    // Menampilkan notifikasi sukses
-    MySwal.fire({
+  const handleDelete = async (id) => {
+    const confirmation = await MySwal.fire({
       title: "Apakah Anda yakin?",
       text: "Anda tidak akan dapat mengembalikan data ini!",
       icon: "warning",
@@ -59,30 +62,23 @@ const DaftarTamu = () => {
       cancelButtonText: "Batal",
       background: isDarkMode ? "#333" : "#fff",
       color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Menampilkan notifikasi sukses menggunakan sweetalert2
-        MySwal.fire({
-          title: "Hapus Berhasil!",
-          text: "Data tamu berhasil dihapus.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          setTamuList(updatedTamuList);
-          localStorage.setItem("tamuList", JSON.stringify(updatedTamuList));
-          setFilteredTamuList(updatedTamuList);
-        });
-      }
     });
+    if (!confirmation.isConfirmed) return;
+    try {
+      const response = await fetch(`/api/admin/guests/${id}`, { method: "DELETE" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Data tamu gagal dihapus.");
+      const updated = tamuList.filter((tamu) => tamu.id !== id);
+      setTamuList(updated);
+      setFilteredTamuList(updated);
+    } catch (deleteError) {
+      setError(deleteError.message);
+    }
   };
 
   // Fungsi untuk clear semua data tamu
-  const handleClearData = () => {
-    // Menampilkan notifikasi sukses menggunakan sweetalert2
-    MySwal.fire({
+  const handleClearData = async () => {
+    const confirmation = await MySwal.fire({
       title: "Apakah Anda yakin?",
       text: "Anda tidak akan dapat mengembalikan data ini!",
       icon: "warning",
@@ -93,29 +89,22 @@ const DaftarTamu = () => {
       cancelButtonText: "Batal",
       background: isDarkMode ? "#333" : "#fff",
       color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Menampilkan notifikasi sukses menggunakan sweetalert2
-        MySwal.fire({
-          title: "Hapus Semuanya Berhasil!",
-          text: "Semua data tamu berhasil dihapus.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          localStorage.removeItem("tamuList");
-          setTamuList([]);
-          setFilteredTamuList([]);
-        });
-      }
     });
+    if (!confirmation.isConfirmed) return;
+    try {
+      const response = await fetch("/api/admin/guests", { method: "DELETE" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Data tamu gagal dihapus.");
+      setTamuList([]);
+      setFilteredTamuList([]);
+    } catch (clearError) {
+      setError(clearError.message);
+    }
   };
 
   // Fungsi untuk navigasi ke halaman tambah tamu
   const handleAddGuest = () => {
-    router.push("/TambahTamu");
+    router.push("/admin/tambahtamu");
   };
 
   // Hitung indeks untuk item yang akan ditampilkan pada halaman saat ini
@@ -135,10 +124,11 @@ const DaftarTamu = () => {
         <FaUsers className="text-yellow-500 mr-2" />
         Daftar Tamu
       </h2>
+      {error && <p role="alert" className="mb-4 text-sm text-red-700 dark:text-red-300">{error}</p>}
 
       <div className="mt-6 flex justify-between items-center text-sm mb-6">
         <Link
-          href="/Dashboard"
+          href="/admin/dashboard"
           className="flex items-center text-md font-semibold text-gray-600 dark:text-gray-400 hover:text-yellow-500 transition"
         >
           <FaArrowLeft className="text-yellow-500 mr-2" />

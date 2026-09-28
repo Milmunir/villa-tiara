@@ -8,7 +8,7 @@ const ShortExplainComponent = () => {
           Kenapa Harus Menginap di <br />
           <span className="text-red-700">Villa Tiara Sarangan?</span>
         </h2>
-        <p className="text-md justify-center font-light text-gray-700 max-w-4xl mx-auto">
+        <p className="text-base md:text-lg font-normal leading-relaxed md:leading-8 text-gray-700 max-w-4xl mx-auto">
           Villa Tiara Sarangan adalah pilihan ideal bagi Anda yang mencari
           penginapan Sarangan murah dengan suasana mewah dan nyaman. Terletak di
           kawasan wisata Sarangan yang terkenal dengan keindahan Telaga

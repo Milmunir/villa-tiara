@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   FaHotel,
   FaSave,
@@ -35,55 +35,58 @@ const TambahBooking = () => {
   const [selectedStatus, setSelectedStatus] = useState("-");
   const [selectedRoomHarga, setSelectedRoomHarga] = useState(0);
   const [totalHarga, setTotalHarga] = useState(0);
-  const [bookingList, setBookingList] = useState([]);
-  const [checkInList, setCheckInList] = useState([]);
-  const [riwayatList, setRiwayatList] = useState([]);
   const [villaTiara1, setVillaTiara1] = useState([]);
   const [villaTiara2, setVillaTiara2] = useState([]);
   const [checkInDate, setCheckInDate] = useState("");
   const [checkOutDate, setCheckOutDate] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [today, setToday] = useState("");
+  const [error, setError] = useState("");
 
-  // Ambil data kamar dari localStorage
   useEffect(() => {
-    const storedKamarList = JSON.parse(localStorage.getItem("kamarList"));
-    setVillaTiara1(storedKamarList.VillaTiara1 || []);
-    setVillaTiara2(storedKamarList.VillaTiara2 || []);
-
-    const storedBookingList =
-      JSON.parse(localStorage.getItem("bookingList")) || [];
-    setBookingList(storedBookingList);
-
-    const storedCheckInList =
-      JSON.parse(localStorage.getItem("checkInList")) || [];
-    setCheckInList(storedCheckInList);
-
-    const storedRiwayatList =
-      JSON.parse(localStorage.getItem("riwayatList")) || [];
-    setRiwayatList(storedRiwayatList);
-
-    const date = new Date();
-    const formattedDate = date.toISOString().split("T")[0];
-    setToday(formattedDate);
+    const currentDate = getCurrentDate();
+    setToday(currentDate);
+    setSelectedDate(currentDate);
   }, []);
 
   useEffect(() => {
-    const today = getCurrentDate();
-    setSelectedDate(today);
-  }, []);
-
-  // Memperbarui daftar kamar setiap kali tanggal yang dipilih berubah
-  useEffect(() => {
-    checkRoomAvailabilityByDate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, bookingList, checkInList, riwayatList]);
+    if (!selectedDate) return;
+    let cancelled = false;
+    fetch(`/api/admin/rooms?date=${selectedDate}`)
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Kamar gagal dimuat.");
+        return result;
+      })
+      .then((rooms) => {
+        if (cancelled) return;
+        setVillaTiara1(rooms.VillaTiara1 || []);
+        setVillaTiara2(rooms.VillaTiara2 || []);
+        const selectedRoom = [...(rooms.VillaTiara1 || []), ...(rooms.VillaTiara2 || [])]
+          .find((room) => room.kodeKamar === selectedRoomId);
+        if (selectedRoom && selectedRoom.status !== "kosong") {
+          setSelectedRoomId("000");
+          setSelectedRoomType("none");
+          setSelectedRoomHarga(0);
+          setSelectedBed("-");
+          setSelectedStatus("-");
+          setTotalHarga(0);
+        }
+        setError("");
+      })
+      .catch((loadError) => {
+        if (!cancelled) setError(loadError.message);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedDate, selectedRoomId]);
 
   // Fungsi untuk menangani klik pada tombol kamar
   const handleRoomClick = (roomId) => {
     const allRooms = [...villaTiara1, ...villaTiara2];
     const room = allRooms.find((kamar) => kamar.kodeKamar === roomId);
-    if (room) {
+    if (room && room.status === "kosong") {
       setSelectedRoomId(room.kodeKamar);
       setSelectedRoomType(room.tipeKamar);
       setSelectedRoomHarga(room.hargaKamar);
@@ -116,23 +119,23 @@ const TambahBooking = () => {
   };
 
   //Fungsi untuk submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    if (selectedRoomId === "000") {
+      setError("Pilih kamar yang tersedia terlebih dahulu.");
+      return;
+    }
 
     const newBooking = {
-      id: Date.now(),
       idKamar: selectedRoomId,
-      tipeKamar: selectedRoomType,
-      statusKamar: "booked",
-      namaTamu: e.target.namaTamu.value,
-      noTelepon: e.target.noTelepon.value,
-      tanggalCheckIn: e.target.tanggalCheckIn.value,
-      tanggalCheckOut: e.target.tanggalCheckOut.value,
-      harga: totalHarga,
-      statusBooking: "booking",
+      namaTamu: e.currentTarget.namaTamu.value,
+      noTelepon: e.currentTarget.noTelepon.value,
+      tanggalCheckIn: e.currentTarget.tanggalCheckIn.value,
+      tanggalCheckOut: e.currentTarget.tanggalCheckOut.value,
     };
 
-    MySwal.fire({
+    const confirmation = await MySwal.fire({
       title: "Apakah Anda yakin?",
       text: "Pastikan data yang Anda masukkan sudah benar.",
       icon: "warning",
@@ -143,30 +146,32 @@ const TambahBooking = () => {
       cancelButtonText: "Batal",
       background: isDarkMode ? "#333" : "#fff",
       color: isDarkMode ? "#fff" : "#000",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        MySwal.fire({
-          title: "Booking Berhasil!",
-          text: "Data booking berhasil disimpan.",
-          icon: "success",
-          confirmButtonText: "OK",
-          background: isDarkMode ? "#333" : "#fff",
-          color: isDarkMode ? "#fff" : "#000",
-          confirmButtonColor: isDarkMode ? "#f59e0b" : "#f59e0b",
-        }).then(() => {
-          const updatedBookingList = [...bookingList, newBooking];
-          setBookingList(updatedBookingList);
-          localStorage.setItem(
-            "bookingList",
-            JSON.stringify(updatedBookingList)
-          );
-          router.push("/DaftarBooking"); // Mengarahkan ke halaman lain setelah notifikasi
-        });
-      }
     });
+    if (!confirmation.isConfirmed) return;
+
+    try {
+      const response = await fetch("/api/admin/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBooking),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Booking gagal disimpan.");
+      await MySwal.fire({
+        title: "Booking Berhasil!",
+        text: "Data booking berhasil disimpan.",
+        icon: "success",
+        confirmButtonText: "OK",
+        background: isDarkMode ? "#333" : "#fff",
+        color: isDarkMode ? "#fff" : "#000",
+      });
+      router.push("/admin/daftarbooking");
+    } catch (submitError) {
+      setError(submitError.message);
+    }
   };
 
-  const handleClear = (e) => {
+  const handleClear = () => {
     setSelectedRoomId("000");
     setSelectedRoomType("none");
     setSelectedRoomHarga("-");
@@ -178,71 +183,13 @@ const TambahBooking = () => {
     document.getElementById("bookingForm").reset();
   };
 
-  // Fungsi untuk mengecek ketersediaan kamar berdasarkan tanggal yang dipilih
-  const checkRoomAvailabilityByDate = useCallback(() => {
-    if (selectedDate) {
-      const updateRoomStatus = (roomList) => {
-        return roomList.map((kamar) => {
-          // Tentukan status kamar berdasarkan kondisi di bookingList
-          const inBookingPeriod = bookingList.some(
-            (booking) =>
-              booking.idKamar === kamar.kodeKamar &&
-              new Date(booking.tanggalCheckIn) <= new Date(selectedDate) &&
-              new Date(booking.tanggalCheckOut) >= new Date(selectedDate)
-          );
-
-          // Tentukan status kamar berdasarkan kondisi di checkInList
-          const inCheckInPeriod = checkInList.some(
-            (checkin) =>
-              checkin.idKamar === kamar.kodeKamar &&
-              new Date(checkin.tanggalCheckIn) <= new Date(selectedDate) &&
-              new Date(checkin.tanggalCheckOut) >= new Date(selectedDate)
-          );
-
-          // Tentukan status kamar berdasarkan kondisi di riwayatList
-          const inRiwayatPeriod = riwayatList.some(
-            (riwayat) =>
-              riwayat.idKamar === kamar.kodeKamar &&
-              new Date(riwayat.tanggalCheckIn) <= new Date(selectedDate) &&
-              new Date(riwayat.tanggalCheckOut) >= new Date(selectedDate)
-          );
-
-          // Set status kamar sesuai dengan kondisi yang ditemukan
-          let status = "kosong";
-          if (inRiwayatPeriod) {
-            status = "kosong";
-          } else if (inCheckInPeriod) {
-            status = "checked";
-          } else if (inBookingPeriod) {
-            status = "booked";
-          }
-
-          return { ...kamar, status }; // Update status kamar
-        });
-      };
-
-      const updatedVillaTiara1 = updateRoomStatus(villaTiara1);
-      const updatedVillaTiara2 = updateRoomStatus(villaTiara2);
-
-      setVillaTiara1(updatedVillaTiara1);
-      setVillaTiara2(updatedVillaTiara2);
-    }
-  }, [
-    selectedDate,
-    bookingList,
-    checkInList,
-    riwayatList,
-    villaTiara1,
-    villaTiara2,
-  ]);
-
   return (
     <div className="fixed left-0 top-14 bottom-10 right-0 md:left-64 py-14 md:pt-10 px-8 overflow-y-auto">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-gray-800 py-8 px-12 rounded-xl shadow-lg md:col-span-2">
           <div className="flex flex-col md:flex-row items-center justify-between mb-4 md:mb-8">
             <Link
-              href="/Dashboard"
+              href="/admin/dashboard"
               className="hidden md:flex items-center text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-yellow-500 transition mb-2 md:mb-0"
             >
               <FaArrowLeft className="text-yellow-500 mr-2" />
@@ -365,6 +312,7 @@ const TambahBooking = () => {
             className="space-y-4 text-sm"
             onSubmit={handleSubmit}
           >
+            {error && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{error}</p>}
             <div>
               <h2 className="text-xl font-semibold mb-2 text-center text-gray-800 dark:text-gray-200">
                 ID Kamar : &quot;
@@ -391,6 +339,7 @@ const TambahBooking = () => {
               <input
                 type="text"
                 id="namaTamu"
+                name="namaTamu"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700 dark:text-gray-200"
                 required
                 placeholder="Masukkan Nama Lengkap"
@@ -404,8 +353,9 @@ const TambahBooking = () => {
                 No Telepon:
               </label>
               <input
-                type="number"
+                type="tel"
                 id="noTelepon"
+                name="noTelepon"
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700 dark:text-gray-200"
                 required
                 placeholder="Masukkan No Telepon"
@@ -424,6 +374,7 @@ const TambahBooking = () => {
                 <input
                   type="date"
                   id="tanggalCheckIn"
+                  name="tanggalCheckIn"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700 dark:text-gray-200"
                   onChange={handleCheckInChange}
                   min={today}
@@ -442,6 +393,7 @@ const TambahBooking = () => {
                 <input
                   type="date"
                   id="tanggalCheckOut"
+                  name="tanggalCheckOut"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md dark:bg-gray-700 dark:text-gray-200"
                   onChange={handleCheckOutChange}
                   min={checkInDate}
@@ -482,6 +434,7 @@ const TambahBooking = () => {
               </button>
               <button
                 type="submit"
+                disabled={selectedRoomId === "000"}
                 className="bg-gradient-to-r from-orange-500 to-red-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg shadow-md transition flex items-center"
               >
                 <FaSave className="mr-2" />

@@ -1,15 +1,5 @@
-"use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
-const HomeRedirect = () => {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/Beranda");
-  }, [router]);
-
-  return null;
-};
-
-export default HomeRedirect;
+export default function RootPage() {
+  redirect("/beranda");
+}

@@ -1,18 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { FaUser, FaLock, FaSignInAlt, FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const FormLogin = () => {
-  const router = useRouter();
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Tambahkan logika login di sini
-    router.push("/Dashboard");
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const response = await fetch("/api/admin/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: formData.get("username"),
+          password: formData.get("password"),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Login failed.");
+      window.location.assign("/admin/dashboard");
+    } catch (submitError) {
+      setError(submitError.message || "Login failed. Please try again.");
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -42,8 +60,6 @@ const FormLogin = () => {
             Selamat Datang di Villa Tiara
           </p>
           <form
-            action="#"
-            method="POST"
             className="space-y-5"
             onSubmit={handleSubmit}
           >
@@ -89,30 +105,20 @@ const FormLogin = () => {
                 />
               </div>
             </div>
-            {/* Checklist Saya Bukan Robot */}
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="not-robot"
-                required
-                className="w-5 h-5 text-yellow-500 border-gray-300 rounded focus:ring-yellow-500"
-              />
-              <label htmlFor="not-robot" className="text-sm text-gray-700">
-                Saya bukan robot
-              </label>
-            </div>
+            {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
             {/* Tombol Login */}
             <button
               type="submit"
+              disabled={isSubmitting}
               className="flex items-center justify-center w-full bg-red-700 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition-colors"
             >
-              <FaSignInAlt className="mr-2" /> Login
+              <FaSignInAlt className="mr-2" /> {isSubmitting ? "Memeriksa..." : "Login"}
             </button>
 
             {/* Link Kembali */}
             <div className="text-center mt-4">
               <Link
-                href="/Beranda"
+                href="/beranda"
                 className="flex items-center justify-center text-sm text-gray-500 hover:text-yellow-500"
               >
                 <FaArrowLeft className="mr-1" /> Kembali

@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPERUSER
+  STAFF
+}
+
+enum ReservationStatus {
+  BOOKED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique @db.VarChar(64)
+  name         String    @db.VarChar(120)
+  passwordHash String    @db.VarChar(255)
+  role         UserRole  @default(STAFF)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  sessions     Session[]
+  reservations Reservation[]
+  guestLogs    GuestLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique @db.Char(64)
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model Room {
+  id            String        @id @default(cuid())
+  code          String        @unique @db.VarChar(32)
+  villa         String        @db.VarChar(64)
+  type          String        @db.VarChar(64)
+  bedInfo       String        @db.VarChar(120)
+  pricePerNight Int
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  reservations  Reservation[]
+}
+
+model Reservation {
+  id              String            @id @default(cuid())
+  roomId          String
+  guestName       String            @db.VarChar(160)
+  guestPhone      String            @db.VarChar(40)
+  checkIn         DateTime          @db.Date
+  checkOut        DateTime          @db.Date
+  nightlyRate     Int
+  totalPrice      Int
+  status          ReservationStatus @default(BOOKED)
+  checkInAt       DateTime?
+  checkOutAt      DateTime?
+  createdById     String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  room            Room              @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  createdBy       User              @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  guestLogs       GuestLog[]
+
+  @@index([roomId, status, checkIn, checkOut])
+  @@index([status, checkIn, checkOut])
+}
+
+model GuestLog {
+  id            String       @id @default(cuid())
+  reservationId String?
+  createdById   String
+  fullName      String       @db.VarChar(160)
+  phone         String       @db.VarChar(40)
+  purpose       String       @db.VarChar(255)
+  visitedAt     DateTime     @default(now())
+  createdAt     DateTime     @default(now())
+  reservation   Reservation? @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  createdBy     User         @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([visitedAt])
+  @@index([reservationId])
+}
